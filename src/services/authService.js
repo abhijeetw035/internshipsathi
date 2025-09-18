@@ -1,112 +1,75 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
 class AuthService {
   constructor() {
-    this.api = axios.create({
-      baseURL: API_BASE_URL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    this.api.interceptors.request.use(
-      (config) => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-
-    this.api.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error.response?.status === 401) {
-          localStorage.removeItem('authToken');
-          window.location.href = '/login';
-        }
-        return Promise.reject(error);
-      }
-    );
+    // No backend configuration needed - pure frontend implementation
+    this.mockUsers = [
+      { email: 'admin@ministry.gov.in', password: 'admin123', role: 'admin', fullName: 'Admin User' },
+      { email: 'student@ministry.gov.in', password: 'student123', role: 'student', fullName: 'Student User' },
+      { email: 'company@ministry.gov.in', password: 'comp123', role: 'company', fullName: 'Company User' }
+    ];
   }
 
   setAuthToken(token) {
     if (token) {
-      this.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      localStorage.setItem('authToken', token);
     } else {
-      delete this.api.defaults.headers.common['Authorization'];
+      localStorage.removeItem('authToken');
     }
   }
 
   removeAuthToken() {
-    delete this.api.defaults.headers.common['Authorization'];
+    localStorage.removeItem('authToken');
+  }
+
+  getToken() {
+    return localStorage.getItem('authToken');
+  }
+
+  isAuthenticated() {
+    const token = this.getToken();
+    if (!token) return false;
+    
+    try {
+      const decoded = this.decodeToken(token);
+      return decoded.exp > Math.floor(Date.now() / 1000);
+    } catch {
+      return false;
+    }
+  }
+
+  getCurrentUser() {
+    const token = this.getToken();
+    if (!token) return null;
+    
+    try {
+      return this.decodeToken(token);
+    } catch {
+      return null;
+    }
+  }
+
+  decodeToken(token) {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
   }
 
   async login(email, password) {
-    try {
-      if (process.env.NODE_ENV === 'development') {
-        return this.mockLogin(email, password);
-      }
-      
-      const response = await this.api.post('/auth/login', { email, password });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async register(userData) {
-    try {
-      if (process.env.NODE_ENV === 'development') {
-        return this.mockRegister(userData);
-      }
-      
-      const response = await this.api.post('/auth/register', userData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async refreshToken() {
-    try {
-      const response = await this.api.post('/auth/refresh');
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async logout() {
-    try {
-      await this.api.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  }
-
-  mockLogin(email, password) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const validCredentials = [
-          { email: 'admin@ministry.gov.in', password: 'admin123', role: 'admin' },
-          { email: 'student@ministry.gov.in', password: 'student123', role: 'student' },
-          { email: 'company@ministry.gov.in', password: 'comp123', role: 'company' }
-        ];
-
-        const user = validCredentials.find(
+        const user = this.mockUsers.find(
           cred => cred.email === email && cred.password === password
         );
 
         if (user) {
           const token = this.generateMockToken(user);
-          resolve({ token, user: { email: user.email, role: user.role } });
+          this.setAuthToken(token);
+          resolve({ 
+            token, 
+            user: { 
+              email: user.email, 
+              role: user.role, 
+              fullName: user.fullName 
+            } 
+          });
         } else {
           reject({
             response: {
@@ -118,7 +81,7 @@ class AuthService {
     });
   }
 
-  mockRegister(userData) {
+  async register(userData) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (!userData.email || !userData.password || !userData.fullName) {
@@ -130,7 +93,8 @@ class AuthService {
           return;
         }
 
-        if (userData.email === 'admin@ministry.gov.in') {
+        // Check if email already exists
+        if (this.mockUsers.find(user => user.email === userData.email)) {
           reject({
             response: {
               data: { message: 'Email already exists' }
@@ -145,10 +109,35 @@ class AuthService {
           fullName: userData.fullName
         };
 
+        // Add to mock users for future logins
+        this.mockUsers.push({ ...user, password: userData.password });
+
         const token = this.generateMockToken(user);
+        this.setAuthToken(token);
         resolve({ token, user });
       }, 1000);
     });
+  }
+
+  async refreshToken() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentToken = this.getToken();
+        if (currentToken && this.isAuthenticated()) {
+          const decoded = this.decodeToken(currentToken);
+          const newToken = this.generateMockToken(decoded);
+          this.setAuthToken(newToken);
+          resolve({ token: newToken });
+        } else {
+          resolve({ token: null });
+        }
+      }, 500);
+    });
+  }
+
+  async logout() {
+    this.removeAuthToken();
+    return Promise.resolve();
   }
 
   generateMockToken(user) {
