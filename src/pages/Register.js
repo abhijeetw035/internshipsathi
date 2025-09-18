@@ -170,7 +170,7 @@ const Register = () => {
               >
                 <option value="">Select your role</option>
                 <option value="admin">Administrator</option>
-                <option value="coordinator">Coordinator</option>
+                <option value="company">Company</option>
                 <option value="user">User</option>
               </select>
               {errors.role && (

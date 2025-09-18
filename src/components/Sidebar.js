@@ -16,13 +16,13 @@ const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();
 
   const navigation = [
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard, allowedRoles: ['admin', 'coordinator', 'user'] },
-    { name: 'Data Upload', href: '/upload', icon: Upload, allowedRoles: ['admin', 'coordinator'] },
+    { name: 'Dashboard', href: '/', icon: LayoutDashboard, allowedRoles: ['admin', 'company', 'student'] },
+    { name: 'Data Upload', href: '/upload', icon: Upload, allowedRoles: ['admin', 'company'] },
     { name: 'Configuration', href: '/configuration', icon: Settings, allowedRoles: ['admin'] },
-    { name: 'Matchmaking', href: '/matchmaking', icon: Zap, allowedRoles: ['admin', 'coordinator'] },
-    { name: 'Results', href: '/results', icon: Table, allowedRoles: ['admin', 'coordinator', 'user'] },
-    { name: 'Analytics', href: '/analytics', icon: BarChart3, allowedRoles: ['admin', 'coordinator', 'user'] },
-    { name: 'What-If Simulator', href: '/what-if', icon: Calculator, allowedRoles: ['admin', 'coordinator'] },
+    { name: 'Matchmaking', href: '/matchmaking', icon: Zap, allowedRoles: ['admin', 'company'] },
+    { name: 'Results', href: '/results', icon: Table, allowedRoles: ['admin', 'company', 'student'] },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, allowedRoles: ['admin', 'company', 'student'] },
+    { name: 'What-If Simulator', href: '/what-if', icon: Calculator, allowedRoles: ['admin', 'company'] },
   ];
 
   const filteredNavigation = navigation.filter(item => 

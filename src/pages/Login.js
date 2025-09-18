@@ -195,10 +195,10 @@ const Login = () => {
                 <strong>Admin:</strong> admin@ministry.gov.in / admin123
               </div>
               <div className="bg-gray-50 p-2 rounded">
-                <strong>User:</strong> user@ministry.gov.in / user123
+                <strong>Student:</strong> student@ministry.gov.in / student123
               </div>
               <div className="bg-gray-50 p-2 rounded">
-                <strong>Coordinator:</strong> coordinator@ministry.gov.in / coord123
+                <strong>Company:</strong> comapny@ministry.gov.in / comp123
               </div>
             </div>
           </div>

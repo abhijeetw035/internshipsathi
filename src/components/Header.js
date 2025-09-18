@@ -16,12 +16,12 @@ const Header = ({ onMenuClick }) => {
     switch (role) {
       case 'admin':
         return 'Administrator';
-      case 'coordinator':
-        return 'Coordinator';
-      case 'user':
-        return 'User';
+      case 'company':
+        return 'Company';
+      case 'student':
+        return 'Student';
       default:
-        return 'User';
+        return 'Student';
     }
   };
 
@@ -37,7 +37,7 @@ const Header = ({ onMenuClick }) => {
           </button>
           <div className="ml-4 lg:ml-0">
             <h1 className="text-xl font-semibold text-gray-900">
-              PM Internship Smart Allocator
+              Internship Sathi
             </h1>
             <p className="text-sm text-gray-500">AI-Based Matching Engine</p>
           </div>

@@ -38,12 +38,12 @@ const Profile = () => {
     switch (role) {
       case 'admin':
         return 'Administrator';
-      case 'coordinator':
-        return 'Coordinator';
-      case 'user':
-        return 'User';
+      case 'company':
+        return 'Company';
+      case 'student':
+        return 'Student';
       default:
-        return 'User';
+        return 'Student';
     }
   };
 

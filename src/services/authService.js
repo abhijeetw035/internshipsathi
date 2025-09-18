@@ -96,8 +96,8 @@ class AuthService {
       setTimeout(() => {
         const validCredentials = [
           { email: 'admin@ministry.gov.in', password: 'admin123', role: 'admin' },
-          { email: 'user@ministry.gov.in', password: 'user123', role: 'user' },
-          { email: 'coordinator@ministry.gov.in', password: 'coord123', role: 'coordinator' }
+          { email: 'student@ministry.gov.in', password: 'student123', role: 'student' },
+          { email: 'company@ministry.gov.in', password: 'comp123', role: 'company' }
         ];
 
         const user = validCredentials.find(
@@ -141,7 +141,7 @@ class AuthService {
 
         const user = {
           email: userData.email,
-          role: userData.role || 'user',
+          role: userData.role || 'student',
           fullName: userData.fullName
         };
 
